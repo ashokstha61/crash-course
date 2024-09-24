@@ -9,8 +9,8 @@ import { getCurrentUser, signIn } from "../../lib/appwrite";
 
 const SignIn = () => {
   const [form, setForm] = useState({
-    email: " ",
-    password: " "
+    email: "",
+    password: ""
   });
 
   const Submit = async () => {

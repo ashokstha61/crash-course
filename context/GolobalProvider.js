@@ -3,45 +3,40 @@ import { getCurrentUser } from "../lib/appwrite";
 const GlobalContext = createContext();
 export const useGlobalContext = () => useContext(GlobalContext);
 const GlobalProvoder = ({ children }) => {
-  const [IsLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
-  const [IsLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    let isMounted = true;
-    getCurrentUser()
-      .then((res) => {
-        if (isMounted) {
-          if (res) {
-            setIsLoggedIn(true);
-            setUser(res);
-          } else {
-            setIsLoggedIn(false);
-            setUser(null);
-          }
+    const fecthUser = async () => {
+      try {
+        const res = await getCurrentUser();
+
+        if (res) {
+          setIsLoggedIn(true);
+          setUser(res);
+        } else {
+          setIsLoggedIn(false);
+          setUser(null);
         }
-      })
-      .catch((error) => {
+      } catch (error) {
         console.log(error);
-      })
-      .finally(() => {
-        if (isMounted) {
-          setIsLoading(false);
-        }
-      });
-    return () => {
-      isMounted = false;
+        setIsLoggedIn(false);
+      } finally {
+        setIsLoading(false);
+      }
     };
+    fecthUser();
   }, []);
 
   return (
     <GlobalContext.Provider
       value={{
-        IsLoggedIn,
+        isLoggedIn,
         setIsLoggedIn,
         user,
         setUser,
-        IsLoading
+        isLoading
       }}
     >
       {children}
